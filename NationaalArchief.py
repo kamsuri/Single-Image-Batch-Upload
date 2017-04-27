@@ -170,8 +170,11 @@ def load_from_url(url, uploading=False):
             articletext+=permission + '\n |other_versions     =\n }}\n\n== {{int:license-header}} ==\n{{Nationaal Archief}}\n' + license + '\n\n'
             if hasPhotographerInDict:
                 articletext+='[[Category:Photographs by ' + photographerName + ']]\n'
-            categories = main(description)
-            categories += main(title)
+            if title == description:
+              categories = main(title)
+            else:
+              categories += main(title)
+              categories = main(description)
             categories += main(collectionname)
             for category in categories:
                 articletext+='[[Category:' + category + ']]\n'
