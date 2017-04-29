@@ -1,8 +1,12 @@
+# coding=UTF-8
+# References: https://thetokenizer.com/2013/05/09/efficient-way-to-extract-the-main-topics-of-a-sentence/
 import nltk
 from nltk.corpus import brown
 
 
+# Using brown corpus news categories to train data 
 brown_train = brown.tagged_sents(categories='news')
+# Regex Expression for comparing the given sentence with the below format and finding tags accordingly
 regexp_tagger = nltk.RegexpTagger(
     [(r'^-?[0-9]+(.[0-9]+)?$', 'CD'),
      (r'(-|:|;)$', ':'),
@@ -18,44 +22,47 @@ regexp_tagger = nltk.RegexpTagger(
      (r'.*es$', 'VBZ'),
      (r'.*', 'NN')
      ])
+# NLTK tagger classes to define my tagger, trained via Brown Corpus
 unigram_tagger = nltk.UnigramTagger(brown_train, backoff=regexp_tagger)
 bigram_tagger = nltk.BigramTagger(brown_train, backoff=unigram_tagger)
 
 
-
+# semi-CFG
 cfg = {}
-cfg["NNP+NNP"] = "NNP"
-cfg["NN+NN"] = "NNI"
-cfg["NNI+NN"] = "NNI"
-cfg["JJ+JJ"] = "JJ"
-cfg["JJ+NN"] = "NNI"
-cfg["NNP+VBG"] = "NNI"
-cfg["NN+VBG"] = "NNI"
-cfg["NNP+VBD"] = "NNI"
-cfg["NN+VBD"] = "NNI"
-cfg["NNP+VBZ"] = "NNI"
-cfg["NN+VBZ"] = "NNI"
+cfg["NNP+NNP"] = "NNP"  # Conactinating two consecutive Proper Nouns into a phrase   
+cfg["NN+NN"] = "NNI"    # Conactinating two consecutive Nouns into a phrase and assigning tag NNI
+cfg["NNI+NN"] = "NNI"   # Conactinating a noun with any of the prebuilt phrase and assigning tag NNI
+cfg["JJ+JJ"] = "JJ"     # Conactinating two consecutive Adjectives into a phrase
+cfg["JJ+NN"] = "NNI"    # Conactinating an adjective and noun into a phrase and assigning tag NNI
+cfg["VBG+NNP"] = "NNI"  # Conactinating a proper noun and verb into a phrase and assigning tag NNI
+cfg["VBG+NN"] = "NNI"   # Conactinating a noun and verb into a phrase and assigning tag NNI
+cfg["VBD+NNP"] = "NNI"  # Conactinating a proper noun and verb(past tense) into a phrase and assigning tag NNI
+cfg["VBD+NN"] = "NNI"   # Conactinating a noun and verb(past tense) into a phrase and assigning tag NNI
+cfg["VBZ+NNP"] = "NNI"  # Conactinating a proper noun and verb(present tense, 3rd person singular) into a phrase and assigning tag NNI
+cfg["VBZ+NN"] = "NNI"   # Conactinating a noun and verb(present tense, 3rd person singular) into a phrase and assigning tag NNI
 
 
 class NPExtractor(object):
 
     def __init__(self, sentence):
         self.sentence = sentence
-
+    
+    # This function breaks a sentence into individual words
     def tokenize_sentence(self, sentence):
         tokens = nltk.word_tokenize(sentence)
         return tokens
-
+    
+    # In this function tags are renamed 
     def normalize_tags(self, tagged):
         n_tagged = []
         for t in tagged:
-            if t[1] == "NP-TL" or t[1] == "NP":
+            if t[1] == "NP-TL" or t[1] == "NP":   # replacing a NP or NP-TL tag with NNP
                 n_tagged.append((t[0], "NNP"))
                 continue
-            if t[1].endswith("-TL"):
+            if t[1].endswith("-TL"):              # -TL(title) tag is removed
                 n_tagged.append((t[0], t[1][:-3]))
                 continue
-            if t[1].endswith("S"):
+            if t[1].endswith("S"):                # Removing the plural form
                 n_tagged.append((t[0], t[1][:-1]))
                 continue
             n_tagged.append((t[0], t[1]))
@@ -67,6 +74,7 @@ class NPExtractor(object):
         tags = self.normalize_tags(bigram_tagger.tag(tokens))
         #print tags
         merge = True
+        # while loop to merge the words according to the semi-CFG mentioned above
         while merge:
             merge = False
             for x in range(0, len(tags) - 1):
@@ -84,6 +92,7 @@ class NPExtractor(object):
                     break
 
         noun = []
+        # for loop for extracting the phrases/words with tags NNP or NNI
         for t in tags:
             if t[1] == "NNP" or t[1] == "NNI":
                 noun.append(t[0])
