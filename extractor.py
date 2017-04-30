@@ -29,17 +29,17 @@ bigram_tagger = nltk.BigramTagger(brown_train, backoff=unigram_tagger)
 
 # semi-CFG
 cfg = {}
-cfg["NNP+NNP"] = "NNP"  # Conactinating two consecutive Proper Nouns into a phrase   
-cfg["NN+NN"] = "NNI"    # Conactinating two consecutive Nouns into a phrase and assigning tag NNI
-cfg["NNI+NN"] = "NNI"   # Conactinating a noun with any of the prebuilt phrase and assigning tag NNI
-cfg["JJ+JJ"] = "JJ"     # Conactinating two consecutive Adjectives into a phrase
-cfg["JJ+NN"] = "NNI"    # Conactinating an adjective and noun into a phrase and assigning tag NNI
-cfg["VBG+NNP"] = "NNI"  # Conactinating a proper noun and verb into a phrase and assigning tag NNI
-cfg["VBG+NN"] = "NNI"   # Conactinating a noun and verb into a phrase and assigning tag NNI
-cfg["VBD+NNP"] = "NNI"  # Conactinating a proper noun and verb(past tense) into a phrase and assigning tag NNI
-cfg["VBD+NN"] = "NNI"   # Conactinating a noun and verb(past tense) into a phrase and assigning tag NNI
-cfg["VBZ+NNP"] = "NNI"  # Conactinating a proper noun and verb(present tense, 3rd person singular) into a phrase and assigning tag NNI
-cfg["VBZ+NN"] = "NNI"   # Conactinating a noun and verb(present tense, 3rd person singular) into a phrase and assigning tag NNI
+cfg["NNP+NNP"] = "NNP"  # Concatinating two consecutive Proper Nouns into a phrase   
+cfg["NN+NN"] = "NNI"    # Concatinating two consecutive Nouns into a phrase and assigning tag NNI
+cfg["NNI+NN"] = "NNI"   # Concatinating a noun with any of the prebuilt phrase and assigning tag NNI
+cfg["JJ+JJ"] = "JJ"     # Concatinating two consecutive Adjectives into a phrase
+cfg["JJ+NN"] = "NNI"    # Concatinating an adjective and noun into a phrase and assigning tag NNI
+cfg["VBG+NNP"] = "NNI"  # Concatinating a proper noun and verb into a phrase and assigning tag NNI
+cfg["VBG+NN"] = "NNI"   # Concatinating a noun and verb into a phrase and assigning tag NNI
+cfg["VBD+NNP"] = "NNI"  # Concatinating a proper noun and verb(past tense) into a phrase and assigning tag NNI
+cfg["VBD+NN"] = "NNI"   # Concatinating a noun and verb(past tense) into a phrase and assigning tag NNI
+cfg["VBZ+NNP"] = "NNI"  # Concatinating a proper noun and verb(present tense, 3rd person singular) into a phrase and assigning tag NNI
+cfg["VBZ+NN"] = "NNI"   # Concatinating a noun and verb(present tense, 3rd person singular) into a phrase and assigning tag NNI
 
 
 class NPExtractor(object):
