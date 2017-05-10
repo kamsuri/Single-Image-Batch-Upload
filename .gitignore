@@ -1,0 +1,13 @@
++throttle.ctrl
++pywikibot.lwp
++user-*.py
++*.pyc
++/data*
++logs*
++*apicache*
++*pycache*
++/cache/*
++.cache
++.idea
++pywikibot.egg-info/
++pywikibot/families/
